@@ -38,11 +38,23 @@ public class Snake{
 		int randX = rand.nextInt(390);
 		int randY = rand.nextInt(390);
 		
-		fruit = new Rectangle(randX - (randX % 20), randY - (randY % 20), size, size);
+		fruit = new Rectangle(randX - (randX % 20), randY - (randY % size), size, size);
+		fruit.setFill(Color.RED);
 		
 		head = new Rectangle(headX, headY, size, size);
 		
 		list.add(new LinearNode(head));
+		
+		Rectangle r1 = new Rectangle(headX, headY, size, size);
+		Rectangle r2 = new Rectangle(headX, headY, size, size);
+		r1.setFill(Color.rgb(0, (list.getAmount() * 2) % 255, 0));
+		
+		list.addBehindFirst(new LinearNode(r1));
+		
+		r2.setFill(Color.rgb(0, (list.getAmount() * 2) % 255, 0));
+		
+		list.addBehindFirst(new LinearNode(r2));
+		
 	}
 	
 	// On key pressed
@@ -62,7 +74,6 @@ public class Snake{
 	// Moves every element one down and head toward dir each frame
 	public Rectangle frame(){
 		Rectangle eat = null;
-		
 		Rectangle rect = list.getFirst().getElement();
 		
 		double prevX = rect.getX();
@@ -84,13 +95,7 @@ public class Snake{
 		}
 		
 		
-		// If out of bounds
-		if(rect.getX() < 0 || rect.getX() > 390 ||
-				rect.getY() < 0 || rect.getY() > 390){
-			
-		}
-		
-		
+		// If fruit eaten
 		if(fruit.getX() == rect.getX() && fruit.getY() == rect.getY()){
 			Rectangle newRect;
 			if(list.getAmount() == 1){
@@ -100,7 +105,7 @@ public class Snake{
 				
 			}
 			//newRect.setFill(Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
-			newRect.setFill(Color.rgb( 255 - (list.getAmount() * 10) % 255, 0, 0));
+			newRect.setFill(Color.rgb(0, (list.getAmount() * 2) % 255, 0));
 			LinearNode node = new LinearNode(newRect);
 			list.addBehindFirst(node);
 			
@@ -108,8 +113,8 @@ public class Snake{
 			int randX = rand.nextInt(390);
 			int randY = rand.nextInt(390);
 			
-			fruit.setX(randX - (randX % 20));
-			fruit.setY(randY - (randY % 20));
+			fruit.setX(randX - (randX % size));
+			fruit.setY(randY - (randY % size));
 			eat = newRect;
 		}
 		if(list.getAmount() > 1){
@@ -119,7 +124,36 @@ public class Snake{
 		
 		return eat;
 		
+	}
+	
+	// Check if snake hits itself
+	public boolean isHit(){
+		Rectangle rect = list.getFirst().getElement();
+		boolean isHit = false;
+		Rectangle[] rects = list.getAllElements();
 		
+		double x = rect.getX();
+		double y = rect.getY();
+		
+		for(int i = 1; i < list.getAmount(); i++){
+			if(x == rects[i].getX() && y == rects[i].getY()){
+				System.out.println("Game Over hit");
+				//isHit = true;
+			}
+		}
+		
+		// If out of bounds
+		if(rect.getX() < 0 || rect.getX() > 390 ||
+			rect.getY() < 0 || rect.getY() > 390){
+			System.out.println("Game Over: Out of bounds");
+			isHit = true;
+		}
+		
+		return isHit;
+	}
+	
+	// Resets the game
+	public void reset(){
 		
 	}
 	

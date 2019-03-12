@@ -13,12 +13,12 @@ import javafx.util.Duration;
 
 public class MainSnake extends Application{
 
-	//TODO first added element not showing
+	//TODO restart on wall hit or self hit
 	
 	public void start(Stage primaryStage){
 		Pane root = new Pane();
 		
-		Text counter = new Text("0");
+		Text counter = new Text("2");
 		counter.setX(20);
 		counter.setY(20);
 		
@@ -30,11 +30,22 @@ public class MainSnake extends Application{
 		Snake snake = new Snake();
 		
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.05), e -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
 			Rectangle rect = snake.frame();
 			if(rect != null){
 				root.getChildren().add(rect);
 				counter.setText(Integer.parseInt(counter.getText()) + 1 + ""); // Increases counter with 1
+			}
+			
+			if(snake.isHit()){
+				reset(snake);
+				counter.setText("1");
+				root.getChildren().clear();
+				
+				root.getChildren().addAll(snake.getRectangles());
+				root.getChildren().add(snake.getFruit());
+				root.getChildren().add(counter);
+				
 			}
 			
 			
@@ -57,6 +68,10 @@ public class MainSnake extends Application{
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Snake");
 		primaryStage.show();
+	}
+	
+	public void reset(Snake snake){
+		snake = new Snake();
 	}
 	
 	public static void main(String[] args) {
